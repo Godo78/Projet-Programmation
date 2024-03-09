@@ -13,7 +13,7 @@ class Solver():
         # TODO: implement this function (and remove the line "raise NotImplementedError").
         # NOTE: you can add other methods and subclasses as much as necessary. The only thing imposed is the format of the solution returned.
     '''  
-    def tri_naif(self,grid):
+    def tri_naif(self, grid):
         
         grosse_liste = []
         for i in range(1,grid.m*grid.n + 1):
@@ -47,3 +47,19 @@ class Solver():
                         grosse_liste = grosse_liste + L
 
         return grid.state , grosse_liste , len(grosse_liste)
+
+    def tri_bfs_naif(self, initial_state):
+        m = len(initial_state[0])
+        n = len(initial_state[0])
+        grid = Grid(m, n, initial_state)
+        G = grid.graph_grilles()
+        dst = [list(range(i*n+1, (i+1)*n+1)) for i in range(m)]
+        node1 = convert1(initial_state)
+        node2 = convert1(dst)
+        return G.bfs(node1, node2)
+
+
+        
+
+
+        

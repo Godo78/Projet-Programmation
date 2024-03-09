@@ -81,7 +81,7 @@ class Graph:
         self.nb_edges += 1
         self.edges.append((node1, node2))
 
-    def bfs(self, src, dst): 
+    def bfs(self, node1, node2): 
         """
         Finds a shortest path from src to dst by BFS.  
 
@@ -98,7 +98,7 @@ class Graph:
             The shortest path from src to dst. Returns None if dst is not reachable from src
         """ 
         
-        graph = self.Graph()
+        
         queue = []  # file d'attente des noeuds à visiter
         node_visited = []  # liste des noeuds déja visité
         dict = {}  # ce dictionnaire permet de déterminer les relations de parenté entre les noeuds
@@ -115,7 +115,7 @@ class Graph:
             # la fonction pop permet d'extraire ici le permier élément de queue et de l'enlever
             node_parent = queue.pop(0)
 
-            for neighbor in graph[node_parent]:
+            for neighbor in self.graph[node_parent]:
 
                 if neighbor not in node_visited:
                     node_visited.append(neighbor)
@@ -166,3 +166,29 @@ class Graph:
                     raise Exception("Format incorrect")
         return graph
 
+
+#Q7
+                                            
+    def graph_avec_toutes_les_grilles_possibles(self, grid):
+        
+        graph_grilles_possibles = Graph([])
+        file = [grid.state]
+    
+        while file != []:
+            téta = file.pop(0)   
+            A = from_listedelistes_to_tupledetuples(téta)
+            for i in range(grid.m):
+                for j in range(grid.n):
+                    L= liste_swap_possible(téta, (i,j))
+                    for elmt in L:
+                        new_teta = copy.deepcopy(téta)
+                        B = swap(new_teta, elmt[0], elmt[1])            
+                        C = from_listedelistes_to_tupledetuples(B)
+                        if C not in graph_grilles_possibles.graph:
+                            graph_grilles_possibles.add_edge(A,C)
+                            file.append(B)
+                        if C in graph_grilles_possibles.graph and C not in graph_grilles_possibles.graph[A]:
+                            graph_grilles_possibles.add_edge(A,C)
+        return graph_grilles_possibles.graph
+
+              

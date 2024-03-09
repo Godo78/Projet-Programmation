@@ -4,6 +4,8 @@ This is the grid module. It contains the Grid class and its associated methods.
 import matplotlib.pyplot as plt
 import random
 import numpy as np
+from graph import Graph
+import copy
 
 class Grid():
     """
@@ -142,3 +144,77 @@ class Grid():
         plt.show ()
 
         return f"<la matrice est de taille : ({self.m}, {self.n}) >"
+    
+    def graph_grilles(self):
+        
+        graph_grilles = Graph([])
+        file = [self.state]
+    
+        while file != []:
+            téta = file.pop(0)   
+            A = convert1(téta)
+            for i in range(self.m):
+                for j in range(self.n):
+                    L= liste_swap_possible(téta, (i,j))
+                    for elmt in L:
+                        new_teta = copy.deepcopy(téta)
+                        B = swap(new_teta, elmt[0], elmt[1])            
+                        C = convert1(B)
+                        if C not in graph_grilles.graph:
+                            graph_grilles.add_edge(A,C)
+                            file.append(B)
+                        if C in graph_grilles.graph and C not in graph_grilles.graph[A]:
+                            graph_grilles.add_edge(A,C)
+        return graph_grilles.graph
+    
+    def convert(self):
+        tupledetuples = ()
+        for element in self.state:
+            tupledetuples = tupledetuples + (tuple(element),)
+        return tupledetuples 
+
+
+
+def convert1(M):
+    tupledetuples = ()
+    for element in M:
+        tupledetuples = tupledetuples + (tuple(element),)
+    return tupledetuples 
+
+
+def is_swap_possible(M, cell1, cell2):
+    
+    x1,y1 = cell1
+    x2,y2 = cell2
+    if x1 < 0 or y1 < 0  or x2 < 0 or y2 < 0:
+        return False
+    if x1 >= len(M) or y1 >= len(M[0]) or x2 >= len(M) or y2 >= len(M[0]):
+        return False
+    if abs(x1-x2)+abs(y1-y2)>1:
+        return False
+    return True
+      
+def liste_swap_possible(M, cell):
+    L=[]
+    for i in range(len(M)):
+        for j in range(len(M[0])):
+            if cell !=(i,j):
+                if is_swap_possible(M, cell, (i,j)):
+                    L.append((cell,(i,j)))
+    return L
+
+def swap(M, cell1, cell2):
+    
+    x1,y1 = cell1
+    x2,y2 = cell2
+    
+    if x1 < 0 or y1 < 0  or x2 < 0 or y2 < 0:
+        raise Exception("Indices négatifs")
+    if x1 >= len(M) or y1 >= len(M[0]) or x2 >= len(M) or y2 >= len(M[0]):
+        raise Exception("indices plus grand que m ou n")
+    if abs(x1-x2)+abs(y1-y2)>1:
+        raise Exception("Impossible swap")
+    M[x1][y1],M[x2][y2] = M[x2][y2],M[x1][y1]
+    return M
+
+                                        
