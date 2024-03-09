@@ -55,7 +55,7 @@ class Grid():
 
     def is_sorted(self):
         m=self.m
-        n=self.n
+        n=self.n 
         return self.state == [list(range(i*n+1, (i+1)*n+1)) for i in range(m)]
         
 
