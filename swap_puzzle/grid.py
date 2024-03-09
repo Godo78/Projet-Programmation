@@ -1,8 +1,9 @@
 """
 This is the grid module. It contains the Grid class and its associated methods.
 """
-
+import matplotlib.pyplot as plt
 import random
+import numpy as np
 
 class Grid():
     """
@@ -120,3 +121,24 @@ class Grid():
                 initial_state[i_line] = line_state
             grid = Grid(m, n, initial_state)
         return grid
+
+
+    def graphique_grille(self):
+  
+        plt . figure ( figsize =(8 ,8) ) # Cree une nouvelle figure avec une taille de 8x8 pouces .
+        ax = plt . gca () # cree les axes
+        ax.invert_yaxis ()# inverse l’axe y pour avoir (0 ,0) en haut a gauche
+        for i in range ( self . m ) :
+            for j in range ( self . n ) :
+                plt.text (j , i , str ( self . state [ i ][ j ]) , color = 'black', fontsize =12)
+        plt.grid(True,which ='both', color = 'black', linewidth =1) # affiche la grille
+        ax.set_xticks( np.arange ( -0.5 , self .n , 1) )# Definit les marqueurs des axes x a
+
+        #intervalles reguliers allant de 0 a self .n - 1
+        ax.set_yticks (np.arange( -0.5 , self .m , 1) )
+        ax.set_xticklabels ([]) # Efface les etiquettes de l’axe x.
+        ax.set_yticklabels ([])
+        plt.title (" Affichage graphique de la grille ")
+        plt.show ()
+
+        return f"<la matrice est de taille : ({self.m}, {self.n}) >"
