@@ -1,5 +1,6 @@
 from grid import Grid
 
+
 class Solver(): 
     """
     A solver class, to be implemented.
@@ -57,13 +58,23 @@ class Solver():
         node1 = convert1(grid.state)
         node2 = convert1(dst)
         return G.bfs(node1, node2), len(G.bfs(node1, node2))-1
+    
+    def tri_bfs_amélioré(self, grid):
+        m = grid.m
+        n = grid.n
+        grid = Grid(m, n, grid.state)
+        G = grid.graph_grilles_amélioré()
+        dst = [list(range(i*n+1, (i+1)*n+1)) for i in range(m)]
+        node1 = convert1(grid.state)
+        node2 = convert1(dst)
+        return G.bfs(node1, node2), len(G.bfs(node1, node2))-1
 
+#fonction convert1 dont on a 
 def convert1(M):
     tupledetuples = ()
     for element in M:
         tupledetuples = tupledetuples + (tuple(element),)
-    return tupledetuples 
-        
+    return tupledetuples
 
 
         

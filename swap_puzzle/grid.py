@@ -168,7 +168,33 @@ class Grid():
         
         
         return graph_grilles
+
+#Q8  
+#génération de toutes les grilles possibles qiui s'arrêtes lorsque l'on arrive à la grille triée
+    def graph_grilles_amélioré(self):
     
+        graph_grilles = Graph([])
+        file = [self.state]
+
+        while file != [] and [list(range(i*self.n+1, (i+1)*self.n+1)) for i in range(self.m)] not in file:        
+            téta = file.pop(0)   
+            A = convert1(téta)
+            for i in range(self.m):
+                for j in range(self.n):
+                    L= liste_swap_possible(téta, (i,j))
+                    for elmt in L:
+                        new_teta = copy.deepcopy(téta)
+                        B = swap(new_teta, elmt[0], elmt[1])            
+                        C = convert1(B)
+                        if C not in graph_grilles.graph:
+                            graph_grilles.add_edge(A,C)
+                            file.append(B)
+                        if C in graph_grilles.graph and C not in graph_grilles.graph[A]:
+                            graph_grilles.add_edge(A,C)
+        
+        
+        return graph_grilles
+
     def convert(self):
         tupledetuples = ()
         for element in self.state:
@@ -219,4 +245,3 @@ def swap(M, cell1, cell2):
     M[x1][y1],M[x2][y2] = M[x2][y2],M[x1][y1]
     return M
 
-                                        
