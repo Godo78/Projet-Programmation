@@ -81,55 +81,28 @@ class Graph:
         self.nb_edges += 1
         self.edges.append((node1, node2))
 
-    def bfs(self, node1, node2): 
-        """
-        Finds a shortest path from src to dst by BFS.  
-
-        Parameters: 
-        -----------
-        src: NodeType
-            The source node.
-        dst: NodeType
-            The destination node.
-
-        Output: 
-        -------
-        path: list[NodeType] | None
-            The shortest path from src to dst. Returns None if dst is not reachable from src
-        """ 
-        
-        
+    def bfs(self, node1, node2):                 
         queue = []  # file d'attente des noeuds à visiter
         node_visited = []  # liste des noeuds déja visité
         dict = {}  # ce dictionnaire permet de déterminer les relations de parenté entre les noeuds
-
         if node1 == node2:
-
             return [node1]
-
         queue.append(node1)
         node_visited.append(node1)
-
         while queue != []:
-
             # la fonction pop permet d'extraire ici le permier élément de queue et de l'enlever
             node_parent = queue.pop(0)
-
             for neighbor in self.graph[node_parent]:
-
                 if neighbor not in node_visited:
                     node_visited.append(neighbor)
                     dict[neighbor] = node_parent
                     queue.append(neighbor)
-
-                    if neighbor == node2:
-                        shortest_path = [neighbor]
-
+                    if neighbor == node2:  # On est arrivé au noeud destination, on peut remonter 
+                        shortest_path = [neighbor] # jusqu'au noeud d'arrivée 
                         while dict[neighbor] != node1:
                             neighbor = dict[neighbor]
                             shortest_path = [neighbor] + shortest_path
                         shortest_path = [node1] + shortest_path
-
                         return shortest_path
         return None
 

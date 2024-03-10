@@ -1,21 +1,18 @@
 
 from grid import Grid
 from solver import Solver
-'''
-initial_state = [[4,1,6],[5,3,2]]
+
+initial_state = [[7,6,3],[5,4,1]]
 g = Grid(2, 3, initial_state)
-
-print(g.state)
-
-print(g.graph_grilles_amélioré())
-
 Solu = Solver()
-print(Solu.tri_bfs_amélioré(g))
-'''
-'''
-print(g.graphique_grille())
-print("effectuer")
+print(Solu.tri_A_star(g))
 
+
+#print(g.graph_grilles_A_star())
+
+
+
+'''
 data_path = "../input/"
 file_name = data_path + "grid0.in"
 

@@ -6,6 +6,7 @@ import random
 import numpy as np
 from graph import Graph
 import copy
+import heapq
 
 class Grid():
     """
@@ -127,19 +128,17 @@ class Grid():
 
     def graphique_grille(self):
   
-        plt . figure ( figsize =(8 ,8) ) # Cree une nouvelle figure avec une taille de 8x8 pouces .
-        ax = plt . gca () # cree les axes
-        ax.invert_yaxis ()# inverse l’axe y pour avoir (0 ,0) en haut a gauche
-        for i in range ( self . m ) :
-            for j in range ( self . n ) :
-                plt.text (j , i , str ( self . state [ i ][ j ]) , color = 'black', fontsize =12)
-        plt.grid(True,which ='both', color = 'black', linewidth =1) # affiche la grille
-        ax.set_xticks( np.arange ( -0.5 , self .n , 1) )# Definit les marqueurs des axes x a
-
-        #intervalles reguliers allant de 0 a self .n - 1
-        ax.set_yticks (np.arange( -0.5 , self .m , 1) )
-        ax.set_xticklabels ([]) # Efface les etiquettes de l’axe x.
-        ax.set_yticklabels ([])
+        plt.figure(figsize = (8 ,8)) # On crée une figure de 8 fois 8 pouces.
+        ax = plt.gca() # on crée les axes
+        ax.invert_yaxis ()# On inverse l’axe pour que (0 ,0) soit en haut a gauche
+        for i in range ( self.m ) :
+            for j in range ( self.n ) :
+                plt.text(j,i,str(self.state[ i ][ j ]),color = 'black', fontsize =12)
+        plt.grid(True,which ='both', color = 'black', linewidth =1) # On affiche la grille
+        ax.set_xticks( np.arange ( -0.5 , self .n , 1) )# On définit les marqueurs des axes x et y
+        ax.set_yticks(np.arange( -0.5 , self .m , 1) )
+        ax.set_xticklabels([]) # On efface les étiquettes de l’axe x puis de l'axe y 
+        ax.set_yticklabels([])
         plt.title (" Affichage graphique de la grille ")
         plt.show ()
 
@@ -148,34 +147,33 @@ class Grid():
     def graph_grilles(self):
         
         graph_grilles = Graph([])
-        file = [self.state]
+        file = [self.state] #on ajoute la grille initiale sous forme de matrice
     
         while file != []:
-            téta = file.pop(0)   
-            A = convert1(téta)
+            téta = file.pop(0)   # On enlève le première élément de la liste (structure fifo)
+            A = convert1(téta)   # On convertit notre matrice en tuple de tuple 
             for i in range(self.m):
                 for j in range(self.n):
-                    L= liste_swap_possible(téta, (i,j))
-                    for elmt in L:
+                    L= liste_swap_possible(téta, (i,j)) # On obtient pour un élément d'une matrice  
+                    for elmt in L:                      # donnée la liste des swaps possibles 
                         new_teta = copy.deepcopy(téta)
-                        B = swap(new_teta, elmt[0], elmt[1])            
+                        B = swap(new_teta, elmt[0], elmt[1])  # On réalise le swap          
                         C = convert1(B)
-                        if C not in graph_grilles.graph:
-                            graph_grilles.add_edge(A,C)
+                        if C not in graph_grilles.graph:      # Si le noeud obtenu n'est pas dans le graphe 
+                            graph_grilles.add_edge(A,C)       # ,on l'ajoute
                             file.append(B)
-                        if C in graph_grilles.graph and C not in graph_grilles.graph[A]:
+                        if C in graph_grilles.graph and C not in graph_grilles.graph[A]: 
                             graph_grilles.add_edge(A,C)
+        #Si le noeud obtenu est déja dans le graphe mais qu'il n'y a pas d'arrêtes correspondante, on crée l'arrête
         
-        
-        return graph_grilles
+        return graph_grilles 
 
-#Q8  
-#génération de toutes les grilles possibles qiui s'arrêtes lorsque l'on arrive à la grille triée
+
     def graph_grilles_amélioré(self):
     
         graph_grilles = Graph([])
         file = [self.state]
-
+        #l'algorithme est sensiblement le même en ajoutant la condition d'arrêter l'algo si la grille triée est visitée
         while file != [] and [list(range(i*self.n+1, (i+1)*self.n+1)) for i in range(self.m)] not in file:        
             téta = file.pop(0)   
             A = convert1(téta)
@@ -195,11 +193,51 @@ class Grid():
         
         return graph_grilles
 
+    def graph_grilles_A_star(self):
+        graph_grilles = Graph([])
+        file_prioritaire = [(heuristique(self.state), self.state)]
+        while file_prioritaire != [] and [list(range(i*self.n+1, (i+1)*self.n+1)) for i in range(self.m)] not in file_prioritaire:        
+            tuple = heapq.heappop(file_prioritaire)
+            téta = tuple[1]
+            A = convert1(téta)
+            for i in range(self.m):
+                for j in range(self.n):
+                    L= liste_swap_possible(téta, (i,j))
+                    for elmt in L:
+                        comparateur = []
+                        new_teta = copy.deepcopy(téta)
+                        B = swap(new_teta, elmt[0], elmt[1])            
+                        C = convert1(B)
+                        comparateur.append((heuristique(B), B))
+                    D = min(comparateur)[1]                       
+                    D_converted = convert1(D)
+                    if D_converted not in graph_grilles.graph:
+                        graph_grilles.add_edge(A,D_converted)
+                        file_prioritaire.append((heuristique(D),D))
+                    if D_converted in graph_grilles.graph and D_converted not in graph_grilles.graph[A]:
+                        graph_grilles.add_edge(A,D_converted)        
+        return graph_grilles
+    
+    def heuristique(self):
+        c=0
+        for i in range(1,self.m*self.n + 1):                            
+            for k in range(self.m):
+                for j in range(self.n):
+                    if self.state[k][j] == i:
+                        indice_ligne = (i-1)//self.n
+                        indice_colonne = (i-1)%self.n
+                        c += abs(indice_ligne - k) + abs(indice_colonne - j)
+        return c 
+
     def convert(self):
         tupledetuples = ()
         for element in self.state:
             tupledetuples = tupledetuples + (tuple(element),)
         return tupledetuples 
+
+
+
+
 
 
 
@@ -245,3 +283,13 @@ def swap(M, cell1, cell2):
     M[x1][y1],M[x2][y2] = M[x2][y2],M[x1][y1]
     return M
 
+def heuristique(M):
+    c=0
+    for i in range(1,len(M)*len(M[0]) + 1):
+        for k in range(len(M)):
+            for j in range(len(M[0])):
+                if M[k][j] == i:
+                    indice_ligne = (i-1)//len(M)
+                    indice_colonne = (i-1)%len(M)
+                    c += abs(indice_ligne - k) + abs(indice_colonne - j)
+    return c 
