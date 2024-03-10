@@ -1,6 +1,6 @@
 import time
 
-
+t= "test"
 def time_bfs_amélioré():
     initial_state = [[4,1,6],[5,3,2]]
     g = Grid(2, 3, initial_state)
