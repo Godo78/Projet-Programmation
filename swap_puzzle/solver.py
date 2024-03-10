@@ -48,17 +48,21 @@ class Solver():
 
         return grid.state , grosse_liste , len(grosse_liste)
 
-    def tri_bfs_naif(self, initial_state):
-        m = len(initial_state[0])
-        n = len(initial_state[0])
-        grid = Grid(m, n, initial_state)
+    def tri_bfs_naif(self, grid):
+        m = grid.m
+        n = grid.n
+        grid = Grid(m, n, grid.state)
         G = grid.graph_grilles()
         dst = [list(range(i*n+1, (i+1)*n+1)) for i in range(m)]
-        node1 = convert1(initial_state)
+        node1 = convert1(grid.state)
         node2 = convert1(dst)
-        return G.bfs(node1, node2)
+        return G.bfs(node1, node2), len(G.bfs(node1, node2))-1
 
-
+def convert1(M):
+    tupledetuples = ()
+    for element in M:
+        tupledetuples = tupledetuples + (tuple(element),)
+    return tupledetuples 
         
 
 

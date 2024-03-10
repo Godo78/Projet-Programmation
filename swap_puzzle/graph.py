@@ -167,28 +167,5 @@ class Graph:
         return graph
 
 
-#Q7
-                                            
-    def graph_avec_toutes_les_grilles_possibles(self, grid):
-        
-        graph_grilles_possibles = Graph([])
-        file = [grid.state]
-    
-        while file != []:
-            téta = file.pop(0)   
-            A = from_listedelistes_to_tupledetuples(téta)
-            for i in range(grid.m):
-                for j in range(grid.n):
-                    L= liste_swap_possible(téta, (i,j))
-                    for elmt in L:
-                        new_teta = copy.deepcopy(téta)
-                        B = swap(new_teta, elmt[0], elmt[1])            
-                        C = from_listedelistes_to_tupledetuples(B)
-                        if C not in graph_grilles_possibles.graph:
-                            graph_grilles_possibles.add_edge(A,C)
-                            file.append(B)
-                        if C in graph_grilles_possibles.graph and C not in graph_grilles_possibles.graph[A]:
-                            graph_grilles_possibles.add_edge(A,C)
-        return graph_grilles_possibles.graph
 
               

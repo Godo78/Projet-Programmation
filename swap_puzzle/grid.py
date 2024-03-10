@@ -165,7 +165,9 @@ class Grid():
                             file.append(B)
                         if C in graph_grilles.graph and C not in graph_grilles.graph[A]:
                             graph_grilles.add_edge(A,C)
-        return graph_grilles.graph
+        
+        
+        return graph_grilles
     
     def convert(self):
         tupledetuples = ()
